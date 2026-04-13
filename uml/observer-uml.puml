@@ -1,0 +1,92 @@
+@startuml
+title Observer Pattern - Homework 7
+
+interface GameObserver {
+  +onEvent(event: GameEvent): void
+}
+
+enum GameEventType {
+  ATTACK_LANDED
+  HERO_LOW_HP
+  HERO_DIED
+  BOSS_PHASE_CHANGED
+  BOSS_DEFEATED
+}
+
+class GameEvent {
+  -type: GameEventType
+  -sourceName: String
+  -value: int
+  +GameEvent(type: GameEventType, sourceName: String, value: int)
+  +getType(): GameEventType
+  +getSourceName(): String
+  +getValue(): int
+}
+
+class EventPublisher {
+  -observers: List<GameObserver>
+  +registerObserver(observer: GameObserver): void
+  +removeObserver(observer: GameObserver): void
+  +notifyObservers(event: GameEvent): void
+}
+
+class BattleLogger {
+  +onEvent(event: GameEvent): void
+}
+
+class AchievementTracker {
+  -unlocked: Set<String>
+  -totalAttacks: int
+  -heroDeaths: int
+  +onEvent(event: GameEvent): void
+}
+
+class PartySupport {
+  -heroes: List<Hero>
+  -random: Random
+  -healAmount: int
+  +PartySupport(heroes: List<Hero>)
+  +PartySupport(heroes: List<Hero>, healAmount: int, seed: long)
+  +onEvent(event: GameEvent): void
+}
+
+class HeroStatusMonitor {
+  -heroes: List<Hero>
+  +HeroStatusMonitor(heroes: List<Hero>)
+  +onEvent(event: GameEvent): void
+  -printSummary(): void
+}
+
+class LootDropper {
+  -random: Random
+  +onEvent(event: GameEvent): void
+}
+
+class DungeonBoss {
+  -publisher: EventPublisher
+  -currentPhase: int
+  +takeDamage(amount: int): void
+  +onEvent(event: GameEvent): void
+}
+
+class Hero
+
+GameObserver <|.. BattleLogger
+GameObserver <|.. AchievementTracker
+GameObserver <|.. PartySupport
+GameObserver <|.. HeroStatusMonitor
+GameObserver <|.. LootDropper
+GameObserver <|.. DungeonBoss
+
+EventPublisher "1" *-- "0..*" GameObserver : observers
+EventPublisher ..> GameEvent : notifies
+
+GameEvent --> GameEventType
+
+DungeonBoss --> EventPublisher : uses
+DungeonBoss ..> GameEvent : publishes / reacts to
+
+PartySupport --> Hero : heals
+HeroStatusMonitor --> Hero : tracks
+
+@enduml

@@ -1,0 +1,109 @@
+@startuml
+title Strategy Pattern - Homework 7
+
+interface CombatStrategy {
+  +calculateDamage(basePower: int): int
+  +calculateDefense(baseDefense: int): int
+  +getName(): String
+}
+
+class AggressiveStrategy {
+  +calculateDamage(basePower: int): int
+  +calculateDefense(baseDefense: int): int
+  +getName(): String
+}
+
+class BalancedStrategy {
+  +calculateDamage(basePower: int): int
+  +calculateDefense(baseDefense: int): int
+  +getName(): String
+}
+
+class DefensiveStrategy {
+  +calculateDamage(basePower: int): int
+  +calculateDefense(baseDefense: int): int
+  +getName(): String
+}
+
+class BossPhaseOneStrategy {
+  +calculateDamage(basePower: int): int
+  +calculateDefense(baseDefense: int): int
+  +getName(): String
+}
+
+class BossPhaseTwoStrategy {
+  +calculateDamage(basePower: int): int
+  +calculateDefense(baseDefense: int): int
+  +getName(): String
+}
+
+class BossPhaseThreeStrategy {
+  +calculateDamage(basePower: int): int
+  +calculateDefense(baseDefense: int): int
+  +getName(): String
+}
+
+class Hero {
+  -name: String
+  -hp: int
+  -maxHp: int
+  -attackPower: int
+  -defense: int
+  -strategy: CombatStrategy
+  +Hero(name: String, hp: int, attackPower: int, defense: int)
+  +Hero(name: String, hp: int, attackPower: int, defense: int, strategy: CombatStrategy)
+  +getName(): String
+  +getHp(): int
+  +getMaxHp(): int
+  +getAttackPower(): int
+  +getDefense(): int
+  +isAlive(): boolean
+  +getStrategy(): CombatStrategy
+  +setStrategy(strategy: CombatStrategy): void
+  +calculateDamage(): int
+  +calculateDefense(): int
+  +takeDamage(amount: int): void
+  +heal(amount: int): void
+}
+
+class DungeonBoss {
+  -name: String
+  -hp: int
+  -maxHp: int
+  -attackPower: int
+  -defense: int
+  -currentPhase: int
+  -strategy: CombatStrategy
+  -phaseOneStrategy: CombatStrategy
+  -phaseTwoStrategy: CombatStrategy
+  -phaseThreeStrategy: CombatStrategy
+  +DungeonBoss(name: String, hp: int, attackPower: int, defense: int, publisher: EventPublisher)
+  +getName(): String
+  +getHp(): int
+  +getMaxHp(): int
+  +getAttackPower(): int
+  +getDefense(): int
+  +getCurrentPhase(): int
+  +getStrategy(): CombatStrategy
+  +isAlive(): boolean
+  +calculateDamage(): int
+  +calculateDefense(): int
+  +takeDamage(amount: int): void
+  +onEvent(event: GameEvent): void
+}
+
+CombatStrategy <|.. AggressiveStrategy
+CombatStrategy <|.. BalancedStrategy
+CombatStrategy <|.. DefensiveStrategy
+CombatStrategy <|.. BossPhaseOneStrategy
+CombatStrategy <|.. BossPhaseTwoStrategy
+CombatStrategy <|.. BossPhaseThreeStrategy
+
+Hero *-- "1" CombatStrategy : uses strategy
+DungeonBoss *-- "1" CombatStrategy : current strategy
+
+DungeonBoss *-- "1" BossPhaseOneStrategy : phase 1
+DungeonBoss *-- "1" BossPhaseTwoStrategy : phase 2
+DungeonBoss *-- "1" BossPhaseThreeStrategy : phase 3
+
+@enduml
